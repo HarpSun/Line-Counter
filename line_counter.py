@@ -1,10 +1,9 @@
-import os
+import argparse
 
 from directory_tree import DirectoryTree, Node
 
 
 class LineCounter:
-    # TODO commandline func
     # TODO ignore file func
 
     def __init__(self) -> None:
@@ -37,10 +36,36 @@ class LineCounter:
             return len(lines)
 
 
-if __name__ == '__main__':
+def main():
+    parser = argparse.ArgumentParser(
+        prog='lc',
+        description='total lines of a file or dir'
+    )
+    parser.add_argument(
+        'path', metavar='path', type=str, help='path of target'
+    )
+    parser.add_argument(
+        '--exclude', action='store', type=str, nargs='*', help='file or dir to be ignored'
+    )
+    parser.add_argument(
+        '--ext', action='store', type=str, nargs='*', help='extension of file to be counted'
+    )
+    args = parser.parse_args()
+    path = args.path
+    exclude_list = []
+    extension_list = []
+    if args.exclude:
+        exclude_list = args.exclude
+    if args.ext:
+        extension_list = args.ext
     counter = LineCounter()
     total = counter.lines_from_path(
-        '../../hua_crm',
-        extension=['py']
+        path,
+        exclude=exclude_list,
+        extension=extension_list
     )
-    print(total)
+    print('total lines:', total)
+
+
+if __name__ == '__main__':
+    main()
