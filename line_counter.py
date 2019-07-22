@@ -1,81 +1,46 @@
 import os
 
+from directory_tree import DirectoryTree, Node
+
 
 class LineCounter:
+    # TODO commandline func
+    # TODO ignore file func
 
-    def __init__(self):
-        self._only_list = []
+    def __init__(self) -> None:
+        self._extension_list = []
         self._exclude_list = []
         self._total_lines = 0
 
-    def lines_from_path(self, path: str, *, exclude=None, only=None) -> int:
+    def lines_from_path(
+            self, path: str, *, exclude: list = None, extension: list = None
+    ) -> int:
         """
-            exclude and only can't be passed together, only one will work
+            exclude contains list of file or dir not to be counted
+            extension contains list of ext intend to be counted
+            when passed together exclude will work first
         """
-        if exclude and only:
-            raise ValueError("exclude and only can't be passed together")
         if exclude:
-            self._exclude_list = exclude
-        if only:
-            self._only_list = only
-
-        target_name = path.split('/')[-1]
-        if self._exclude_list:
-            if target_name not in self._exclude_list:
-                if os.path.isfile(path):
-                    return self.lines_from_file(path)
-                elif os.path.isdir(path):
-                    return self.lines_from_directory(path)
-            else:
-                return 0
-
-        if self._only_list:
-            if os.path.isfile(path):
-                if target_name in self._only_list:
-                    return self.lines_from_file(path)
-            elif os.path.isdir(path):
-                return self.lines_from_directory(path)
-            else:
-                return 0
-
-    def lines_from_directory(self, dir_path: str) -> int:
-        self._total_lines = 0
-        if not os.path.exists(dir_path):
-            raise FileNotFoundError
-
-        file_list = os.listdir(dir_path)
-        for f in file_list:
-            if f not in self._exclude_list:
-                path = os.path.join(os.path.abspath(dir_path), f)
-                if path.endswith('.py'):
-                    self._total_lines += self.lines_from_file(path)
-                elif os.path.isdir(path):
-                    self._total_lines += self.lines_from_directory(path)
-
+            self._exclude_list.extend(exclude)
+        if extension:
+            self._extension_list.extend(extension)
+        dir_tree = DirectoryTree(path)
+        file_list = dir_tree.traversal_with_filter(self._exclude_list, self._extension_list)
+        for n in file_list:
+            self._total_lines += self.lines_from_file(n)
         return self._total_lines
 
-    def lines_from_file(self, file_path: str) -> int:
-        filename = file_path.split('/')[-1]
-        if filename in self._exclude_list:
-            return 0
-        else:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                lines = f.readlines()
-                return len(lines)
-
-    def _filtered_file_list(self, path):
-        result = []
-        name = path.split('/')[-1]
-        if os.path.isfile(path):
-            if name in self._only_list:
-                return result.append(path)
-        elif os.path.isdir(path):
-            return self.lines_from_directory(path)
+    @staticmethod
+    def lines_from_file(node: Node) -> int:
+        with open(node.path, 'r', errors='ignore') as f:
+            lines = f.readlines()
+            return len(lines)
 
 
 if __name__ == '__main__':
     counter = LineCounter()
     total = counter.lines_from_path(
-        '../test',
+        '../../hua_crm',
+        extension=['py']
     )
     print(total)
