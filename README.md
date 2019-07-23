@@ -1,7 +1,7 @@
 # Line-Counter
 Line-Counter is a simple tool that can help you to calculate the total lines of a file or directory
 
-### Installation
+## Installation
 
 - Requirements: python > 3.0
 
@@ -11,7 +11,7 @@ download the code and run
 $ python setup.py install
 ```
 
-### Usage
+## Usage
 
 ```
 lc [-h] [--exclude [EXCLUDE [EXCLUDE ...]]] [--ext [EXT [EXT ...]]] path
@@ -26,3 +26,7 @@ optional arguments:
                         extension of file to be counted
 ```
 
+## TODO
+
+1. optimizing performance
+2. allow ignore file
