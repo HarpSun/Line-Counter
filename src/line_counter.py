@@ -65,6 +65,8 @@ def main() -> None:
     )
     args = parser.parse_args()
     path = args.path
+    if path.endswith('/'):
+        path = path[:-1]
     exclude_list = []
     extension_list = []
     if args.exclude:
