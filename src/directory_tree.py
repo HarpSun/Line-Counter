@@ -33,16 +33,17 @@ class DirectoryTree:
         self._generate_tree_from_root(self.root)
 
     def __iter__(self) -> typing.Generator:
-        queue = [self.root]
+        root = self.root
+        if not root.children:
+            if root.type == 'file':
+                yield self.root
+            elif root.type == 'directory':
+                yield
+        # breadth first traversal
+        queue = [root]
         while queue:
-            root = queue.pop(0)
-            if not root.children:
-                if root.type == 'file':
-                    yield root
-                elif root.type == 'directory':
-                    yield
-
-            for child in root.children:
+            node = queue.pop(0)
+            for child in node.children:
                 if child.type == 'file':
                     yield child
                 elif child.type == 'directory':

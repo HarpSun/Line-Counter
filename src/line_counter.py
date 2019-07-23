@@ -27,12 +27,17 @@ class LineCounter:
             self._exclude_list.extend(exclude)
         if extension:
             self._extension_list.extend(extension)
+
         dir_tree = DirectoryTree(path)
         for file in dir_tree:
-            if file not in self._exclude_list:
+            if file in self._exclude_list:
+                continue
+            if self._extension_list:
                 ext = file.name.split('.')[-1]
                 if ext in self._extension_list:
                     self._total_lines += self.lines_from_file(file)
+            else:
+                self._total_lines += self.lines_from_file(file)
         return self._total_lines
 
     @staticmethod
