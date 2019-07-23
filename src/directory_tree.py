@@ -31,6 +31,7 @@ class DirectoryTree:
     def __init__(self, path: str) -> None:
         self.root = Node(path)
         self._generate_tree_from_root(self.root)
+        self._exclude_list = []
 
     def __iter__(self) -> typing.Generator:
         root = self.root
@@ -46,7 +47,7 @@ class DirectoryTree:
             for child in node.children:
                 if child.type == 'file':
                     yield child
-                elif child.type == 'directory':
+                elif child.type == 'directory' and child.name not in self._exclude_list:
                     queue.append(child)
 
     def _generate_tree_from_root(self, root: Node) -> None:

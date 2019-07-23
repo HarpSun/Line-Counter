@@ -29,8 +29,10 @@ class LineCounter:
             self._extension_list.extend(extension)
 
         dir_tree = DirectoryTree(path)
+        # while iterating dir_tree, directory excluded should not be yield
+        dir_tree._exclude_list = self._exclude_list
         for file in dir_tree:
-            if file in self._exclude_list:
+            if file.name in self._exclude_list:
                 continue
             if self._extension_list:
                 ext = file.name.split('.')[-1]
