@@ -1,4 +1,5 @@
 import os
+import typing
 from sys import platform
 
 
@@ -31,7 +32,11 @@ class DirectoryTree:
         self.root = Node(path)
         self._generate_tree_from_root(self.root)
 
-    def traversal_with_filter(self, exclude_list: list, extension_list: list) -> list:
+    def traversal_with_filter(
+            self,
+            exclude_list: typing.List[str],
+            extension_list: typing.List[str]
+    ) -> typing.Generator:
         """breadth first search to get all file node which need to be counted"""
         if self.root.type == 'file' and not self.root.children:
             return [self.root]

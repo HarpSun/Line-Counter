@@ -1,6 +1,7 @@
 import argparse
+import typing
 
-from directory_tree import DirectoryTree, Node
+from .directory_tree import DirectoryTree, Node
 
 
 class LineCounter:
@@ -12,7 +13,10 @@ class LineCounter:
         self._total_lines = 0
 
     def lines_from_path(
-            self, path: str, *, exclude: list = None, extension: list = None
+            self, path: str,
+            *,
+            exclude: typing.List[str] = None,
+            extension: typing.List[str] = None
     ) -> int:
         """
             exclude contains list of file or dir not to be counted
@@ -36,7 +40,7 @@ class LineCounter:
             return len(lines)
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         prog='lc',
         description='total lines of a file or dir'
