@@ -11,7 +11,7 @@ else:
     raise SystemError('unknown operating system')
 
 
-class Node(object):
+class Node:
 
     def __init__(self, path: str) -> None:
         self.path = path
@@ -32,25 +32,20 @@ class DirectoryTree:
         self.root = Node(path)
         self._generate_tree_from_root(self.root)
 
-    def traversal_with_filter(
-            self,
-            exclude_list: typing.List[str],
-            extension_list: typing.List[str]
-    ) -> typing.Generator:
-        """breadth first search to get all file node which need to be counted"""
-        if self.root.type == 'file' and not self.root.children:
-            return [self.root]
-        elif self.root.type == 'directory' and not self.root.children:
-            return []
+    def __iter__(self) -> typing.Generator:
         queue = [self.root]
         while queue:
-            node = queue.pop(0)
-            for child in node.children:
-                if child.type == 'file' and child.name not in exclude_list:
-                    ext = child.name.split('.')[-1]
-                    if ext in extension_list:
-                        yield child
-                elif child.type == 'directory' and child.name not in exclude_list:
+            root = queue.pop(0)
+            if not root.children:
+                if root.type == 'file':
+                    yield root
+                elif root.type == 'directory':
+                    yield
+
+            for child in root.children:
+                if child.type == 'file':
+                    yield child
+                elif child.type == 'directory':
                     queue.append(child)
 
     def _generate_tree_from_root(self, root: Node) -> None:

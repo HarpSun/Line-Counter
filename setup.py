@@ -15,7 +15,7 @@ setup(
     version='0.5',
     author='HarpSun',
     author_email='dilras0@gmail.com',
-    url='http://www.you.com/projectname',
+    url='https://github.com/HarpSun/Line-Counter',
     packages=['src'],
     entry_points={
         'console_scripts': [

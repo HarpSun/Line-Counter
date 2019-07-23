@@ -28,9 +28,11 @@ class LineCounter:
         if extension:
             self._extension_list.extend(extension)
         dir_tree = DirectoryTree(path)
-        file_list = dir_tree.traversal_with_filter(self._exclude_list, self._extension_list)
-        for n in file_list:
-            self._total_lines += self.lines_from_file(n)
+        for file in dir_tree:
+            if file not in self._exclude_list:
+                ext = file.name.split('.')[-1]
+                if ext in self._extension_list:
+                    self._total_lines += self.lines_from_file(file)
         return self._total_lines
 
     @staticmethod
