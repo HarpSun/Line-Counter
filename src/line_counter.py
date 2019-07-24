@@ -5,7 +5,6 @@ from .directory_tree import DirectoryTree, Node
 
 
 class LineCounter:
-    # TODO ignore file func
 
     def __init__(self) -> None:
         self._extension_list = []
@@ -42,11 +41,17 @@ class LineCounter:
                 self._total_lines += self.lines_from_file(file)
         return self._total_lines
 
+    def lines_from_file(self, node: Node) -> int:
+        with open(node.path, 'r', encoding='utf-8', errors='ignore') as f:
+            return sum(bl.count('\n') for bl in self._blocks(f))
+
     @staticmethod
-    def lines_from_file(node: Node) -> int:
-        with open(node.path, 'r', errors='ignore') as f:
-            lines = f.readlines()
-            return len(lines)
+    def _blocks(file, size=4096):
+        while True:
+            b = file.read(size)
+            if not b:
+                break
+            yield b
 
 
 def main() -> None:
