@@ -10,7 +10,8 @@ class LineCounter:
     def __init__(self) -> None:
         self._extension_list = []
         self._exclude_list = []
-        self._total_lines = 0
+        self.total_files = 0
+        self.total_lines = 0
 
     def lines_from_path(
             self, path: str,
@@ -37,10 +38,12 @@ class LineCounter:
             if self._extension_list:
                 ext = file.name.split('.')[-1]
                 if ext in self._extension_list:
-                    self._total_lines += self.lines_from_file(file)
+                    self.total_files += 1
+                    self.total_lines += self.lines_from_file(file)
             else:
-                self._total_lines += self.lines_from_file(file)
-        return self._total_lines
+                self.total_files += 1
+                self.total_lines += self.lines_from_file(file)
+        return self.total_lines
 
     def lines_from_file(self, node: Node) -> int:
         with open(node.path, 'r', encoding='utf-8', errors='ignore') as f:
@@ -92,6 +95,7 @@ def main() -> None:
     )
     end = time.time()
     print('total lines:', total)
+    print('{} files searched'.format(counter.total_files))
     print('takes {:2f} seconds'.format(end-start))
 
 
