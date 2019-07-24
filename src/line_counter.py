@@ -1,5 +1,6 @@
 import argparse
 import typing
+import time
 
 from .directory_tree import DirectoryTree, Node
 
@@ -46,7 +47,10 @@ class LineCounter:
             return sum(bl.count('\n') for bl in self._blocks(f))
 
     @staticmethod
-    def _blocks(file, size=4096):
+    def _blocks(
+            file: typing.IO,
+            size: int = 65536
+    ) -> typing.Generator[str, None, None]:
         while True:
             b = file.read(size)
             if not b:
@@ -78,13 +82,17 @@ def main() -> None:
         exclude_list = args.exclude
     if args.ext:
         extension_list = args.ext
+    # execute
     counter = LineCounter()
+    start = time.time()
     total = counter.lines_from_path(
         path,
         exclude=exclude_list,
         extension=extension_list
     )
+    end = time.time()
     print('total lines:', total)
+    print('takes {:2f} seconds'.format(end-start))
 
 
 if __name__ == '__main__':
