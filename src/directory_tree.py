@@ -16,6 +16,7 @@ class Node:
     def __init__(self, path: str) -> None:
         self.path = path
         self.name = path.split(SPLIT_SIGN)[-1]
+        self.extension = _extension_by_name(self.name)
         self.type = _type_by_path(path)
         self.children = []
 
@@ -31,7 +32,10 @@ class DirectoryTree:
     def __init__(self, path: str) -> None:
         self.root = Node(path)
         self._generate_tree_from_root(self.root)
-        self._exclude_list = []
+        self._matcher = None
+
+    def add_matcher(self, matcher):
+        self._matcher = matcher
 
     def __iter__(self) -> typing.Generator:
         root = self.root
@@ -45,9 +49,9 @@ class DirectoryTree:
         while queue:
             node = queue.pop(0)
             for child in node.children:
-                if child.type == 'file':
+                if child.type == 'file' and self._matcher.match_extension(child.extension):
                     yield child
-                elif child.type == 'directory' and child.name not in self._exclude_list:
+                elif child.type == 'directory' and self._matcher.match_name(child.name):
                     queue.append(child)
 
     def _generate_tree_from_root(self, root: Node) -> None:
@@ -67,3 +71,10 @@ def _type_by_path(path: str) -> str:
         return 'directory'
     else:
         raise ValueError('{} is not a valid path'.format(path))
+
+
+def _extension_by_name(name: str) -> str:
+    if '.' in name:
+        return name.split('.')[-1]
+    else:
+        return ''

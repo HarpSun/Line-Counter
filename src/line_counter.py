@@ -3,46 +3,21 @@ import typing
 import time
 
 from .directory_tree import DirectoryTree, Node
+from .matcher import Matcher
 
 
 class LineCounter:
 
     def __init__(self) -> None:
-        self._extension_list = []
-        self._exclude_list = []
         self.total_files = 0
         self.total_lines = 0
 
-    def lines_from_path(
-            self, path: str,
-            *,
-            exclude: typing.List[str] = None,
-            extension: typing.List[str] = None
-    ) -> int:
-        """
-            exclude contains list of file or dir not to be counted
-            extension contains list of ext intend to be counted
-            when passed together exclude will work first
-        """
-        if exclude:
-            self._exclude_list.extend(exclude)
-        if extension:
-            self._extension_list.extend(extension)
-
+    def lines_from_path(self, path: str, matcher: Matcher) -> int:
         dir_tree = DirectoryTree(path)
-        # while iterating dir_tree, directory excluded should not be yield
-        dir_tree._exclude_list = self._exclude_list
+        dir_tree.add_matcher(matcher)
         for file in dir_tree:
-            if file.name in self._exclude_list:
-                continue
-            if self._extension_list:
-                ext = file.name.split('.')[-1]
-                if ext in self._extension_list:
-                    self.total_files += 1
-                    self.total_lines += self.lines_from_file(file)
-            else:
-                self.total_files += 1
-                self.total_lines += self.lines_from_file(file)
+            self.total_files += 1
+            self.total_lines += self.lines_from_file(file)
         return self.total_lines
 
     def lines_from_file(self, node: Node) -> int:
@@ -86,13 +61,10 @@ def main() -> None:
     if args.ext:
         extension_list = args.ext
     # execute
+    matcher = Matcher(exclude=exclude_list, extension=extension_list)
     counter = LineCounter()
     start = time.time()
-    total = counter.lines_from_path(
-        path,
-        exclude=exclude_list,
-        extension=extension_list
-    )
+    total = counter.lines_from_path(path, matcher)
     end = time.time()
     print('total lines:', total)
     print('{} files searched'.format(counter.total_files))
