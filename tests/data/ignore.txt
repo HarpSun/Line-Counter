@@ -1,0 +1,5 @@
+ignoreA/
+*.py
+
+# this is a comment
+ignore.py
