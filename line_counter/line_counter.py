@@ -89,7 +89,4 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    # main()
-    m = Matcher(accept_extensions=['py'])
-    res = LineCounter().lines_from_path('../../../hua_crm', matcher=m)
-    print(res)
+    main()
