@@ -12,14 +12,14 @@ if float("%d.%d" % sys.version_info[:2]) < 3.0:
 
 setup(
     name='line-counter',
-    version='0.5',
+    version='0.7',
     author='HarpSun',
     author_email='dilras0@gmail.com',
     url='https://github.com/HarpSun/Line-Counter',
-    packages=['src'],
+    packages=['line_counter'],
     entry_points={
         'console_scripts': [
-            'lc=src.line_counter:main',
+            'lc=line_counter.line_counter:main',
         ],
     },
 )

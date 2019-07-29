@@ -45,23 +45,40 @@ def main() -> None:
         'path', metavar='path', type=str, help='path of target'
     )
     parser.add_argument(
-        '--exclude', action='store', type=str, nargs='*', help='file or dir to be ignored'
+        '-ef', '--exclude-file', action='store', type=str, nargs='*', help='file to be ignored'
     )
     parser.add_argument(
-        '--ext', action='store', type=str, nargs='*', help='extension of file to be counted'
+        '-ed', '--exclude-dir', action='store', type=str, nargs='*', help='dir to be ignored'
+    )
+    parser.add_argument(
+        '-et', '--exclude-ext', action='store', type=str, nargs='*', help='extension of file to be ignored'
+    )
+    parser.add_argument(
+        '-at', '--accept-ext', action='store', type=str, nargs='*', help='extension of file to be counted'
     )
     args = parser.parse_args()
     path = args.path
     if path.endswith('/'):
         path = path[:-1]
-    exclude_list = []
-    extension_list = []
-    if args.exclude:
-        exclude_list = args.exclude
-    if args.ext:
-        extension_list = args.ext
+    exclude_files = []
+    exclude_dirs = []
+    exclude_extensions = []
+    accept_extensions = []
+    if args.exclude_file:
+        exclude_files.extend(args.exclude_file)
+    if args.exclude_dir:
+        exclude_dirs.extend(args.exclude_dir)
+    if args.exclude_ext:
+        exclude_extensions.extend(args.ext)
+    if args.accept_ext:
+        accept_extensions.extend(args.accept_ext)
     # execute
-    matcher = Matcher(exclude=exclude_list, extension=extension_list)
+    matcher = Matcher(
+        exclude_files=exclude_files,
+        exclude_dirs=exclude_dirs,
+        exclude_extensions=exclude_extensions,
+        accept_extensions=accept_extensions
+    )
     counter = LineCounter()
     start = time.time()
     total = counter.lines_from_path(path, matcher)
@@ -72,4 +89,7 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    m = Matcher(accept_extensions=['py'])
+    res = LineCounter().lines_from_path('../../../hua_crm', matcher=m)
+    print(res)

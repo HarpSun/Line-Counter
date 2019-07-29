@@ -51,7 +51,7 @@ class DirectoryTree:
             for child in node.children:
                 if child.type == 'file' and not self._matcher.match_file_by_name(child.name):
                     yield child
-                elif child.type == 'directory' and not self._matcher.match_dir(child.name):
+                elif child.type == 'directory' and not self._matcher.match_dir_by_name(child.name):
                     queue.append(child)
 
     def _generate_tree_from_root(self, root: Node) -> None:
