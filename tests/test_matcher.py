@@ -4,7 +4,7 @@ from line_counter import Matcher
 
 
 class TestMatcher(TestCase):
-    file = 'ignore.txt'
+    file = 'data/ignore.txt'
     matcher = Matcher.init_by_file(file)
 
     def test_init_by_file(self):
