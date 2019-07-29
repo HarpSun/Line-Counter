@@ -14,19 +14,27 @@ $ python setup.py install
 ## Usage
 
 ```
-lc [-h] [--exclude [EXCLUDE [EXCLUDE ...]]] [--ext [EXT [EXT ...]]] path
+usage: lc [-h] [-ef [EXCLUDE_FILE [EXCLUDE_FILE ...]]]
+          [-ed [EXCLUDE_DIR [EXCLUDE_DIR ...]]]
+          [-et [EXCLUDE_EXT [EXCLUDE_EXT ...]]]
+          [-at [ACCEPT_EXT [ACCEPT_EXT ...]]]
+          path
+
 positional arguments:
   path                  path of target
 
 optional arguments:
   -h, --help            show this help message and exit
-  --exclude [EXCLUDE [EXCLUDE ...]]
-                        file or dir to be ignored
-  --ext [EXT [EXT ...]]
+  -ef [EXCLUDE_FILE [EXCLUDE_FILE ...]], --exclude-file [EXCLUDE_FILE [EXCLUDE_FILE ...]]
+                        file to be ignored
+  -ed [EXCLUDE_DIR [EXCLUDE_DIR ...]], --exclude-dir [EXCLUDE_DIR [EXCLUDE_DIR ...]]
+                        dir to be ignored
+  -et [EXCLUDE_EXT [EXCLUDE_EXT ...]], --exclude-ext [EXCLUDE_EXT [EXCLUDE_EXT ...]]
+                        extension of file to be ignored
+  -at [ACCEPT_EXT [ACCEPT_EXT ...]], --accept-ext [ACCEPT_EXT [ACCEPT_EXT ...]]
                         extension of file to be counted
 ```
 
 ## TODO
 
 1. optimizing performance
-2. allow ignore file
