@@ -60,18 +60,18 @@ def main() -> None:
     path = args.path
     if path.endswith('/'):
         path = path[:-1]
-    exclude_files = []
-    exclude_dirs = []
-    exclude_extensions = []
-    accept_extensions = []
+    exclude_files = set()
+    exclude_dirs = set()
+    exclude_extensions = set()
+    accept_extensions = set()
     if args.exclude_file:
-        exclude_files.extend(args.exclude_file)
+        exclude_files.update(args.exclude_file)
     if args.exclude_dir:
-        exclude_dirs.extend(args.exclude_dir)
+        exclude_dirs.update(args.exclude_dir)
     if args.exclude_ext:
-        exclude_extensions.extend(args.ext)
+        exclude_extensions.update(args.ext)
     if args.accept_ext:
-        accept_extensions.extend(args.accept_ext)
+        accept_extensions.update(args.accept_ext)
     # execute
     matcher = Matcher(
         exclude_files=exclude_files,

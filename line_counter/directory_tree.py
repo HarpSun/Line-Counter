@@ -37,7 +37,7 @@ class DirectoryTree:
     def add_matcher(self, matcher):
         self._matcher = matcher
 
-    def __iter__(self) -> typing.Generator:
+    def __iter__(self) -> typing.Generator[Node, None, None]:
         root = self.root
         if not root.children:
             if root.type == 'file':
@@ -49,10 +49,16 @@ class DirectoryTree:
         while queue:
             node = queue.pop(0)
             for child in node.children:
-                if child.type == 'file' and not self._matcher.match_file_by_name(child.name):
-                    yield child
-                elif child.type == 'directory' and not self._matcher.match_dir_by_name(child.name):
-                    queue.append(child)
+                if self._matcher:
+                    if child.type == 'file' and not self._matcher.match_file_by_name(child.name):
+                        yield child
+                    elif child.type == 'directory' and not self._matcher.match_dir_by_name(child.name):
+                        queue.append(child)
+                else:
+                    if child.type == 'file':
+                        yield child
+                    elif child.type == 'directory':
+                        queue.append(child)
 
     def _generate_tree_from_root(self, root: Node) -> None:
         if root.type == 'directory':
