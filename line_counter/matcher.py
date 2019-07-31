@@ -3,7 +3,8 @@ import typing
 
 class Matcher:
     """
-        Matcher
+        Matcher, act as a filter of files and directory that should
+        not be counted
      """
 
     def __init__(
@@ -45,6 +46,7 @@ class Matcher:
             )
 
     def match_file_by_name(self, name: str) -> bool:
+        """return False means file should be counted"""
         if '.' in name:
             ext = name.split('.')[-1]
         else:
