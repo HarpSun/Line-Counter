@@ -33,12 +33,12 @@ class Matcher:
                     continue
                 if line.startswith('*.'):
                     ext = line.split('.')[-1]
-                    exclude_extensions.update(ext)
+                    exclude_extensions.add(ext)
                 elif line.endswith('/'):
                     name = line[:-1]
-                    exclude_dirs.update(name)
+                    exclude_dirs.add(name)
                 else:
-                    exclude_files.update(line)
+                    exclude_files.add(line)
             return cls(
                 exclude_files=exclude_files,
                 exclude_dirs=exclude_dirs,
@@ -56,13 +56,15 @@ class Matcher:
             return True
         if self._exclude_extensions and ext in self._exclude_extensions:
             return True
-        if self._accept_extensions and ext in self._accept_extensions:
-            return False
-        else:
-            return True
+        if self._accept_extensions:
+            return ext not in self._accept_extensions
+        return False
 
     def match_dir_by_name(self, name: str) -> bool:
-        return self._exclude_dirs and name in self._exclude_dirs
+        if self._exclude_dirs:
+            return name in self._exclude_dirs
+        else:
+            return False
 
     @staticmethod
     def _check_extension_conflict(exclude_extensions, accept_extensions):
