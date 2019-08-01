@@ -66,8 +66,7 @@ class Matcher:
         else:
             return False
 
-    @staticmethod
-    def _check_extension_conflict(exclude_extensions, accept_extensions):
+    def _check_extension_conflict(self, exclude_extensions, accept_extensions):
         if exclude_extensions and accept_extensions:
             if exclude_extensions & accept_extensions:
                 raise ValueError('extension conflict')

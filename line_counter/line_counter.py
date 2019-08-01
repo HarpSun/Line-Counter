@@ -15,14 +15,14 @@ class LineCounter:
 
     def lines_from_path(self, path: str, matcher: typing.Optional[Matcher] = None) -> int:
         dir_tree = DirectoryTree(path)
-        dir_tree.add_matcher(matcher)
+        if matcher:
+            dir_tree.add_matcher(matcher)
         for file in dir_tree:
             self.total_files += 1
             self.total_lines += self.lines_from_file(file)
         return self.total_lines
 
-    @staticmethod
-    def lines_from_file(node: Node) -> int:
+    def lines_from_file(self, node: Node) -> int:
         with open(node.path, 'r+', encoding='utf-8', errors='ignore') as f:
             buf = mmap.mmap(f.fileno(), 0)
             lines = 0

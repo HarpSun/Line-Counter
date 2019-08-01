@@ -37,7 +37,7 @@ class DirectoryTree:
         self._generate_tree_from_root(self.root)
         self._matcher = None
 
-    def add_matcher(self, matcher):
+    def add_matcher(self, matcher: Matcher):
         self._matcher = matcher
 
     def __iter__(self) -> typing.Generator[Node, None, None]:
