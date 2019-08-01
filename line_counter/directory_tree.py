@@ -3,6 +3,9 @@ import typing
 from sys import platform
 
 
+Matcher = typing.TypeVar('Matcher')
+
+
 if platform == "darwin":
     SPLIT_SIGN = '/'
 elif platform == "win32":
@@ -50,12 +53,12 @@ class DirectoryTree:
             node = queue.pop(0)
             for child in node.children:
                 if self._matcher:
-                    if child.type == 'file' and not self._matcher.match_file_by_name(child.name):
+                    if _validate_file(child, self._matcher):
                         yield child
                     elif child.type == 'directory' and not self._matcher.match_dir_by_name(child.name):
                         queue.append(child)
                 else:
-                    if child.type == 'file':
+                    if _validate_file(child):
                         yield child
                     elif child.type == 'directory':
                         queue.append(child)
@@ -84,3 +87,11 @@ def _extension_by_name(name: str) -> str:
         return name.split('.')[-1]
     else:
         return ''
+
+
+def _validate_file(node: Node, matcher: typing.Optional[Matcher] = None) -> bool:
+    if node.type == 'file':
+        if matcher:
+            return not matcher.match_file_by_name(node.name) and os.stat(node.path).st_size != 0
+        else:
+            return os.stat(node.path).st_size != 0

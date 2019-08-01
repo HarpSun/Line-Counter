@@ -1,3 +1,4 @@
+import mmap
 import argparse
 import typing
 import time
@@ -20,20 +21,14 @@ class LineCounter:
             self.total_lines += self.lines_from_file(file)
         return self.total_lines
 
-    def lines_from_file(self, node: Node) -> int:
-        with open(node.path, 'r', encoding='utf-8', errors='ignore') as f:
-            return sum(bl.count('\n') for bl in self._blocks(f))
-
     @staticmethod
-    def _blocks(
-            file: typing.IO,
-            size: int = 65536
-    ) -> typing.Generator[str, None, None]:
-        while True:
-            b = file.read(size)
-            if not b:
-                break
-            yield b
+    def lines_from_file(node: Node) -> int:
+        with open(node.path, 'r+', encoding='utf-8', errors='ignore') as f:
+            buf = mmap.mmap(f.fileno(), 0)
+            lines = 0
+            while buf.readline():
+                lines += 1
+            return lines
 
 
 def main() -> None:
