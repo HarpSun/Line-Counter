@@ -12,7 +12,7 @@ class LineCounter:
         self.total_files = 0
         self.total_lines = 0
 
-    def lines_from_path(self, path: str, matcher: Matcher) -> int:
+    def lines_from_path(self, path: str, matcher: typing.Optional[Matcher] = None) -> int:
         dir_tree = DirectoryTree(path)
         dir_tree.add_matcher(matcher)
         for file in dir_tree:
