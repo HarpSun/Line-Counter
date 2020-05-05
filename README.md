@@ -35,6 +35,3 @@ optional arguments:
                         extension of file to be counted
 ```
 
-## TODO
-
-1. optimizing performance
